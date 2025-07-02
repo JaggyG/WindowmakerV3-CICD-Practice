@@ -1,0 +1,92 @@
+# Advanced CI Pipeline with Quality Checks
+name: Advanced CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+  # Job 1: Code Quality Analysis
+  code-quality:
+    name: 'Code Quality'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 'Checkout code'
+      uses: actions/checkout@v4
+    
+    - name: 'Setup .NET'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    # Check code formatting
+    - name: 'Check code formatting'
+      run: dotnet format --verify-no-changes --verbosity normal
+    
+    # Restore and build
+    - name: 'Restore dependencies'
+      run: dotnet restore
+    
+    - name: 'Build'
+      run: dotnet build --configuration Release --no-restore
+
+  # Job 2: Run Tests with Coverage
+  test-with-coverage:
+    name: 'Test with Coverage'
+    runs-on: ubuntu-latest
+    needs: code-quality  # Wait for code quality to pass first
+    
+    steps:
+    - name: 'Checkout code'
+      uses: actions/checkout@v4
+    
+    - name: 'Setup .NET'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: 'Restore dependencies'
+      run: dotnet restore
+    
+    - name: 'Build'
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: 'Run tests with coverage'
+      run: |
+        dotnet test --configuration Release --no-build \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./coverage
+    
+    - name: 'Upload coverage to Codecov'
+      uses: codecov/codecov-action@v3
+      with:
+        directory: ./coverage
+        fail_ci_if_error: false  # Don't fail if codecov is down
+
+  # Job 3: Security Scan
+  security-scan:
+    name: 'Security Scan'
+    runs-on: ubuntu-latest
+    needs: code-quality
+    
+    steps:
+    - name: 'Checkout code'
+      uses: actions/checkout@v4
+    
+    - name: 'Setup .NET'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: 'Restore dependencies'
+      run: dotnet restore
+    
+    # Check for known security vulnerabilities in packages
+    - name: 'Security audit'
+      run: dotnet list package --vulnerable --include-transitive
