@@ -1,4 +1,7 @@
-# CI/CD Practice Project
+# WindowmakerV3 CI/CD Practice
+
+[![CI](https://github.com/JaggyG/WindowmakerV3-CICD-Practice/actions/workflows/ci.yml/badge.svg)](https://github.com/JaggyG/WindowmakerV3-CICD-Practice/actions/workflows/ci.yml)
+![Coverage](https://img.shields.io/badge/Code%20Coverage-0%25-red.svg)
 
 This is a practice project to learn CI/CD concepts before implementing them in WindowmakerV3.
 
@@ -17,24 +20,39 @@ This is a practice project to learn CI/CD concepts before implementing them in W
 └── README.md
 ```
 
-## What We're Learning
+## Features
 
-1. **Basic CI/CD Pipeline**: Automatically build and test code when pushed
-2. **GitHub Actions**: Microsoft's CI/CD platform
-3. **Automated Testing**: Run tests on every code change
-4. **Build Validation**: Ensure code compiles before merging
+- ✅ Basic CI pipeline with GitHub Actions
+- ✅ Automated testing on push/PR
+- ✅ Code coverage reporting
+- 🚧 Code quality checks (coming soon)
+- 🚧 Multi-environment testing (coming soon)
+- 🚧 Deployment pipeline (coming soon)
 
-## How to Use
+## Running Locally
 
-1. Push this code to a GitHub repository
-2. GitHub will automatically run the CI pipeline
-3. Check the "Actions" tab to see results
-4. Try making changes and see the pipeline run again
+```bash
+# Build the project
+dotnet build
 
-## Next Steps
+# Run tests
+dotnet test
 
-Once we understand these basics, we'll:
-- Add deployment steps
-- Add security scanning
-- Add code coverage reports
-- Create more complex workflows
+# Run tests with coverage
+dotnet test --collect:"XPlat Code Coverage"
+```
+
+## CI/CD Pipeline
+
+The CI pipeline runs automatically on:
+- Push to `main` or `develop` branches
+- Pull requests to `main` branch
+
+### Pipeline Steps
+
+1. **Setup**: Configure .NET 8.0 environment
+2. **Restore**: Download NuGet packages
+3. **Build**: Compile in Release mode
+4. **Test**: Run all unit and integration tests with coverage
+5. **Coverage**: Generate coverage reports
+6. **Artifacts**: Upload build outputs and coverage reports
