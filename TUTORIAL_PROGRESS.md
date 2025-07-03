@@ -33,11 +33,20 @@
 - Created coverage badge in README
 - **Coverage artifacts**: HTML reports + Cobertura XML
 
+### 6. Code Quality Checks
+- Created separate `code-quality` job for parallel execution
+- Added `dotnet format` check for code style consistency
+- Added security vulnerability scanning for dependencies
+- Added outdated package detection
+- Created `.editorconfig` for style rules
+- **Quality gates**: Formatting must pass, security issues warned
+
 ## Current State
 - **Repository**: https://github.com/JaggyG/WindowmakerV3-CICD-Practice
-- **CI Status**: ✅ Enhanced pipeline with coverage
+- **CI Status**: ✅ Enhanced pipeline with coverage + quality checks
 - **Tests**: 5/5 passing with coverage reporting
-- **Ready for**: Code quality checks
+- **Quality**: Code formatting, security scanning, dependency audit
+- **Ready for**: Multi-environment testing
 
 ## Next Steps (When We Resume)
 

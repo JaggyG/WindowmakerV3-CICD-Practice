@@ -59,3 +59,39 @@ jobs:
       with:
         name: build-artifacts
         path: src/TestApi/bin/Release/
+
+  code-quality:
+    name: 'Code Quality Checks'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 'Checkout code'
+      uses: actions/checkout@v4
+    
+    - name: 'Setup .NET'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: 'Restore dependencies'
+      run: dotnet restore
+    
+    - name: 'Check code formatting'
+      run: |
+        dotnet format --verify-no-changes --verbosity diagnostic
+        if [ $? -ne 0 ]; then
+          echo "::error::Code formatting issues found. Run 'dotnet format' locally to fix."
+          exit 1
+        fi
+    
+    - name: 'Security scan'
+      run: |
+        dotnet list package --vulnerable --include-transitive
+        if [ $? -ne 0 ]; then
+          echo "::warning::Security vulnerabilities found in dependencies"
+        fi
+    
+    - name: 'Check for outdated packages'
+      run: |
+        dotnet list package --outdated
+        echo "::notice::Review outdated packages above"
